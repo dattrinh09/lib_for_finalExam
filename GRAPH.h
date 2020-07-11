@@ -1,4 +1,4 @@
-#include "jrb.h"
+	#include "jrb.h"
 #include "jval.h"
 #include "MAP.h"
 
@@ -49,6 +49,9 @@ void addVertex(char* _key, int _id, GRAPH** graph);
 
 //hàm thêm cạnh vào đồ thị (có hướng)
 void addEdge(int _id1, int _id2, int weight, GRAPH** graph);
+
+//trả về trọng số của cạnh
+int edgeValue(int _id1, int _id2, GRAPH* graph);
 
 //hàm trả về ma trận 2 x (số đỉnh), trong đó hàng 1 là khoảng cách, hàng 2 là truy vết
 int** dijkstra(int _begin, GRAPH** graph);

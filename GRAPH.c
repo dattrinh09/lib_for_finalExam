@@ -175,11 +175,36 @@ void addEdge(int id1, int id2, int weight, GRAPH** graph)
 
 	//tùy yêu cầu của đề bài
 	// jrb_insert_int(node2 -> reverse_Adjcency, id1, new_jval_i(weight));
-	if(weight >= 50)
+	// if(weight >= 50)
+	// {
+	// 	++(node1 -> walk);
+	// 	++(node2 -> walk);
+	// }
+}
+
+int edgeValue(int _id1, int _id2, GRAPH* graph)
+{
+	graphNode* current = graph -> node;
+
+	while(current != NULL)
 	{
-		++(node1 -> walk);
-		++(node2 -> walk);
+		if(current -> id == _id1)
+		{
+			JRB tmp;
+			jrb_traverse(tmp, current -> Adjcency)
+			{
+				if(tmp -> key.i == _id2)
+				{
+					return tmp -> val.i;
+				}
+			}
+			break;
+		}
+
+		current = current -> next;
 	}
+
+	return 0;
 }
 
 int not_in_list(int n, int* list, int size)

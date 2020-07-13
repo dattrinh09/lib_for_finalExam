@@ -11,12 +11,13 @@
 typedef struct GRAPH
 {
 	struct graphNode* node;	//đỉnh đồ thị
+	int* id;
 	int size;	//số đỉnh có trong đồ thị
 }GRAPH;
 
 typedef struct graphNode //một đỉnh của đồ thị
 {
-	int id;	//id bắt đầu từ 1
+	int id;	//id do chương trình đặt tự động, chỉ chương trình dùng
 	char* key;	//tên đỉnh
 	int in_degree;
 	int out_degree;
@@ -55,7 +56,7 @@ int edgeValue(int _id1, int _id2, GRAPH* graph);
 
 //hàm trả về ma trận 2 x (số đỉnh), trong đó hàng 1 là khoảng cách, hàng 2 là truy vết
 int** dijkstra(int _begin, GRAPH** graph);
-void find_path(int _end, int** path, int size);
+void find_path(int _end, int** path, GRAPH* graph);
 
 //In ra topo của đồ thị
 void topo(GRAPH* graph);

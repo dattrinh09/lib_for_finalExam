@@ -116,14 +116,31 @@ void addVertex(char* _key, int _id, GRAPH** graph)
 {
 	graphNode* new = NULL;
 
-	if(_id == 0)
+	int k = -1;
+
+	for (int i = 0; i < (*graph) -> size; ++i)
 	{
-		new = vertexExistedKey(_key, graph);
+		if((*graph) -> id[i] == _id)
+		{
+			k = i + 1;
+			break;
+		}
 	}
+
+	if(k == -1)
+		_id = _id;
 	else
-	{
-		new = vertexExistedId(_id, graph);
-	}
+		_id = k;
+
+	if(k != -1)
+		if(_id == 0)
+		{
+			new = vertexExistedKey(_key, graph);
+		}
+		else
+		{
+			new = vertexExistedId(_id, graph);
+		}
 
 	if(new == NULL)
 	{
@@ -132,10 +149,10 @@ void addVertex(char* _key, int _id, GRAPH** graph)
 		strcpy(new -> key, _key);
 		new -> Adjcency = make_jrb();
 
+		++((*graph) -> size);
 
-		//tùy yêu cầu đề bài
-		// new -> reverse_Adjcency = make_jrb();
-
+		(*graph) -> id = (int*)realloc((*graph) -> id, ((*graph) -> size) * sizeof(int));
+		(*graph) -> id[(*graph) -> size - 1] = _id;
 
 		if((*graph) -> node == NULL)
 		{
@@ -153,18 +170,31 @@ void addVertex(char* _key, int _id, GRAPH** graph)
 
 			previous -> next = new;
 
-			if(_id == 0)
-				new -> id = previous -> id + 1;
-			else
-				new -> id = _id;
+			new -> id = previous -> id + 1;
 		}
-
-		++((*graph) -> size);
 	}
 }
 
 void addEdge(int id1, int id2, int weight, GRAPH** graph)
 {
+	for (int i = 0; i < (*graph) -> size; ++i)
+	{
+		if((*graph) -> id[i] == id1)
+		{
+			id1 = i + 1;
+			break;
+		}
+	}
+
+	for (int i = 0; i < (*graph) -> size; ++i)
+	{
+		if((*graph) -> id[i] == id2)
+		{
+			id2 = i + 1;
+			break;
+		}
+	}
+
 	graphNode* node1 = vertexExistedId(id1, graph);
 	graphNode* node2 = vertexExistedId(id2, graph);
 
@@ -172,14 +202,6 @@ void addEdge(int id1, int id2, int weight, GRAPH** graph)
 	++(node2 -> in_degree);
 
 	jrb_insert_int(node1 -> Adjcency, id2, new_jval_i(weight));
-
-	//tùy yêu cầu của đề bài
-	// jrb_insert_int(node2 -> reverse_Adjcency, id1, new_jval_i(weight));
-	// if(weight >= 50)
-	// {
-	// 	++(node1 -> walk);
-	// 	++(node2 -> walk);
-	// }
 }
 
 int edgeValue(int _id1, int _id2, GRAPH* graph)
@@ -224,6 +246,16 @@ int** dijkstra(int _begin, GRAPH** graph)
 	int l_size = 1;
 	int** res = (int**)calloc(2, sizeof(int*));
 
+
+	// printf("%d\n", _begin);
+	for (int i = 0; i < (*graph) -> size; ++i)
+	{
+		if((*graph) -> id[i] == _begin)
+		{
+			_begin = i + 1;
+			break;
+		}
+	}
 
 	for (int i = 0; i < 2; ++i)
 		*(res + i) = (int*)calloc((*graph) -> size, sizeof(int));
@@ -304,17 +336,27 @@ int** dijkstra(int _begin, GRAPH** graph)
 	return res;
 }
 
-void find_path(int _end, int** path, int size)
+void find_path(int _end, int** path, GRAPH* graph)
 {
 	int* way = NULL;
 	int s_size = 0;
+
+	for (int i = 0; i < graph -> size; ++i)
+	{
+		if(graph -> id[i] == _end)
+		{
+			_end = i + 1;
+			break;
+		}
+	}
+
 	if(path[0][_end - 1] != 0)
 	{
 		int next = path[1][_end - 1];
 
 		printf("%d\n", path[0][_end - 1]);
 		way = realloc(way, (++s_size) * sizeof(int));
-		way[s_size - 1] = _end - 1;
+		way[s_size - 1] = graph -> id[_end - 1];
 
 		do
 		{
@@ -325,9 +367,9 @@ void find_path(int _end, int** path, int size)
 
 		for (int i = s_size - 1; i > 0; --i)
 		{
-			printf("%c -> ", way[i] + 'A');
+			printf("%c -> ", graph -> id[way[i]] + 'A' - 1);
 		}
-		printf("%c\n", way[0] + 'A');
+		printf("%c\n", way[0] + 'A' - 1);
 	}
 }
 

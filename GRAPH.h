@@ -50,6 +50,7 @@ void addVertex(char* _key, int _id, GRAPH** graph);
 
 //hàm thêm cạnh vào đồ thị (có hướng)
 void addEdge(int _id1, int _id2, int weight, GRAPH** graph);
+void addEdge_str(char* _key1, char* _key2, int weight, GRAPH** graph);
 
 //trả về trọng số của cạnh
 int edgeValue(int _id1, int _id2, GRAPH* graph);

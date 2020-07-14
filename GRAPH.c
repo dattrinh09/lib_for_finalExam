@@ -120,27 +120,23 @@ void addVertex(char* _key, int _id, GRAPH** graph)
 
 	for (int i = 0; i < (*graph) -> size; ++i)
 	{
-		if((*graph) -> id[i] == _id)
+		if((*graph) -> id[i] == _id && _id != 0)
 		{
 			k = i + 1;
 			break;
 		}
 	}
 
-	if(k == -1)
-		_id = _id;
-	else
-		_id = k;
-
 	if(k != -1)
+	{
+		_id = k;
+		new = vertexExistedId(_id, graph);
+	}else{
 		if(_id == 0)
 		{
 			new = vertexExistedKey(_key, graph);
 		}
-		else
-		{
-			new = vertexExistedId(_id, graph);
-		}
+	}
 
 	if(new == NULL)
 	{
@@ -198,10 +194,24 @@ void addEdge(int id1, int id2, int weight, GRAPH** graph)
 	graphNode* node1 = vertexExistedId(id1, graph);
 	graphNode* node2 = vertexExistedId(id2, graph);
 
+	if(weight >= 50)
+		++(node1 -> walk);
+
 	++(node1 -> out_degree);
 	++(node2 -> in_degree);
 
 	jrb_insert_int(node1 -> Adjcency, id2, new_jval_i(weight));
+}
+
+void addEdge_str(char* _key1, char* _key2, int weight, GRAPH** graph)
+{
+	graphNode* node1 = vertexExistedKey(_key1, graph);
+	graphNode* node2 = vertexExistedKey(_key2, graph);
+
+	++(node1 -> out_degree);
+	++(node2 -> in_degree);
+
+	jrb_insert_int(node1 -> Adjcency, node2 -> id, new_jval_i(weight));
 }
 
 int edgeValue(int _id1, int _id2, GRAPH* graph)
@@ -367,9 +377,11 @@ void find_path(int _end, int** path, GRAPH* graph)
 
 		for (int i = s_size - 1; i > 0; --i)
 		{
-			printf("%c -> ", graph -> id[way[i]] + 'A' - 1);
+			printf("%d -> ", graph -> id[way[i]]);
 		}
-		printf("%c\n", way[0] + 'A' - 1);
+		printf("%d\n", way[0]);
+	}else{
+		printf("ROUTE NOT FOUND!\n");
 	}
 }
 
@@ -449,7 +461,6 @@ void topo(GRAPH* graph)
 	{
 		if(head -> in_degree != 0)
 		{
-			printf("%d\n", head -> id);
 			DAG = 0;
 			break;
 		}

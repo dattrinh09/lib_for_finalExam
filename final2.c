@@ -28,8 +28,6 @@ int main()
 		addEdge(id2, id1, time, &graph);
 	}
 
-	printf("%d\n", graph -> size);
-
 	int option = 0;
 
 	while(option != 6)
@@ -50,8 +48,8 @@ int main()
 				{
 					jrb_traverse(a, tmp -> Adjcency)
 					{
-						ad_matrix[tmp -> id - 1][a -> key.i - 1] = a -> val.i;
-						ad_matrix[a -> key.i - 1][tmp -> id - 1] = a -> val.i;
+						ad_matrix[graph -> id[tmp -> id - 1] - 1][graph -> id[a -> key.i - 1] - 1] = a -> val.i;
+						ad_matrix[graph -> id[a -> key.i - 1] - 1][graph -> id[tmp -> id - 1] - 1] = a -> val.i;
 					}
 
 					tmp = tmp -> next;
@@ -93,50 +91,43 @@ int main()
 			case 3:
 			{
 				graphNode* tmp = graph -> node;
+				int max_way = 0;
 
 				while(tmp != NULL)
 				{
-					if(tmp -> walk == tmp -> in_degree && tmp -> walk == tmp -> out_degree)
-						printf("%d\t", tmp -> id);
+					if(max_way < tmp -> in_degree)
+						max_way = tmp -> in_degree;
 
+					if(tmp -> walk == tmp -> in_degree)
+						printf("%d\t", graph -> id[tmp -> id - 1]);
+					
 					tmp = tmp -> next;
 				}
-
 				printf("\n");
 
-				int arr[2][vertex];
+				tmp = graph -> node;
 
-				for (int i = 0; i < vertex; ++i)
+				while(tmp != NULL)
 				{
-					arr[0][i] = i + 1;
-					arr[1][i] = findVertex(i+1, &graph) -> in_degree;
-				}
-
-				for (int i = 0; i < vertex - 1; ++i)
-				{
-					for (int j = i + 1; j < vertex; ++j)
+					if(tmp -> in_degree == max_way)
 					{
-						if(arr[1][i] < arr[1][j])
-						{
-							int tmp = arr[1][i];
-							arr[1][i] = arr[1][j];
-							arr[1][j] = tmp;
-
-							tmp = arr[0][i];
-							arr[0][i] = arr[0][j];
-							arr[0][j] = tmp;
-						}
+						printf("%d\t", graph -> id[tmp -> id - 1]);
 					}
-				}
-				printf("%d\t", arr[0][0]);
-
-				for (int i = 1; i < vertex; ++i)
-				{
-					
-						printf("%d\t", arr[0][i]);
+					tmp = tmp -> next;
 				}
 				printf("\n");
 
+				break;
+			}
+
+			case 4:
+			{
+				int s, t;
+				scanf("%d", &s);
+				scanf("%d", &t);
+
+				int** res = dijkstra(s, &graph);
+				find_path(t, res, graph);
 				break;
 			}
 		}

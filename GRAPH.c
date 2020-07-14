@@ -112,6 +112,21 @@ void enQueue(int _value, QUEUE** queue)
 	}
 }
 
+void enStack(int _value, STACK** stack)
+{
+	if(*stack == NULL)
+	{
+		*stack = (STACK*)calloc(1, sizeof(STACK));
+		(*stack) -> value = _value;
+	}else{
+		STACK* new = (STACK*)calloc(1, sizeof(STACK));
+
+		new -> value = _value;
+		new -> next = *stack;
+		*stack = new;
+	}
+}
+
 void addVertex(char* _key, int _id, GRAPH** graph)
 {
 	graphNode* new = NULL;
@@ -400,7 +415,7 @@ char* f(int n, GRAPH* graph)
 	return NULL;
 }
 
-void topo(GRAPH* graph)
+int topo(GRAPH* graph)
 {
 	int DAG = 0;
 	QUEUE* queue = NULL;
@@ -471,9 +486,128 @@ void topo(GRAPH* graph)
 	if(DAG)
 		for (int i = 0; i < r_size; ++i)
 			printf("%-10s", f(res[i], graph));
-		else
+	else
 			printf("not DAG graph!");
 	printf("\n");
+
+	if(DAG)
+		return 1;
+	else
+		return 0;
+}
+
+void DFS(int _begin, GRAPH** graph)
+{
+	int* list = NULL;
+	int l_size = 0;
+
+	STACK* stack = NULL;
+	int s_size = 0;
+
+	for (int i = 0; i < (*graph) -> size; ++i)
+	{
+		if((*graph) -> id[i] == _begin)
+		{
+			enStack(i+1, &stack);
+			++l_size;
+			list = realloc(list, l_size * sizeof(int));
+			list[l_size - 1] = _begin;
+			++s_size;
+			break;
+		}
+	}
+
+	while(s_size != 0)
+	{
+		int top = stack -> value;
+		printf("%d\n", (*graph) -> id[top - 1]);
+
+		stack = stack -> next;
+		--s_size;
+
+		graphNode* node = findVertex(top, graph);
+		JRB a;
+
+		jrb_traverse(a, node -> Adjcency)
+		{
+			int found = 0;
+
+			for (int i = 0; i < l_size; ++i)
+			{
+				if(list[i] == a -> key.i)
+				{
+					found = 1;
+					break;
+				}
+			}
+
+			if(found == 0)
+			{
+				++l_size;
+				list = realloc(list, l_size * sizeof(int));
+				list[l_size - 1] = a -> key.i;
+				enStack(a -> key.i, &stack);
+				++s_size;
+			}
+		}
+	}
+}
+
+void BFS(int _begin, GRAPH** graph)
+{
+	int* list = NULL;
+	int l_size = 0;
+
+	QUEUE* queue = NULL;
+	int q_size = 0;
+
+	for (int i = 0; i < (*graph) -> size; ++i)
+	{
+		if((*graph) -> id[i] == _begin)
+		{
+			enQueue(i+1, &queue);
+			++l_size;
+			list = realloc(list, l_size * sizeof(int));
+			list[l_size - 1] = _begin;
+			++q_size;
+			break;
+		}
+	}
+
+
+	while(q_size != 0)
+	{
+		printf("%d\n", (*graph) -> id[queue -> value - 1]);
+
+		graphNode* node = findVertex(queue -> value, graph);
+		JRB a;
+
+		jrb_traverse(a, node -> Adjcency)
+		{
+			int found = 0;
+
+			for (int i = 0; i < l_size; ++i)
+			{
+				if(list[i] == a -> key.i)
+				{
+					found = 1;
+					break;
+				}
+			}
+
+			if(found == 0)
+			{
+				++l_size;
+				list = realloc(list, l_size * sizeof(int));
+				list[l_size - 1] = a -> key.i;
+				enQueue(a -> key.i, &queue);
+				++q_size;
+			}
+
+		}
+		queue = queue -> next;
+		--q_size;
+	}
 }
 
 void addInfor(int _store_id, int _product_id, int quantity, GRAPH** graph)

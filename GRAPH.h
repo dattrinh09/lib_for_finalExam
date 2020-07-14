@@ -13,6 +13,7 @@ typedef struct GRAPH
 	struct graphNode* node;	//đỉnh đồ thị
 	int* id;
 	int size;	//số đỉnh có trong đồ thị
+	int edge;
 }GRAPH;
 
 typedef struct graphNode //một đỉnh của đồ thị
@@ -45,6 +46,13 @@ typedef struct QUEUE
 	struct QUEUE* next;
 }QUEUE;
 
+typedef struct STACK
+{
+	int value;
+
+	struct STACK* next;
+}STACK;
+
 //hàm thêm đỉnh vào đồ thị
 void addVertex(char* _key, int _id, GRAPH** graph);
 
@@ -60,7 +68,11 @@ int** dijkstra(int _begin, GRAPH** graph);
 void find_path(int _end, int** path, GRAPH* graph);
 
 //In ra topo của đồ thị
-void topo(GRAPH* graph);
+int topo(GRAPH* graph);
+
+//Duyệt đồ thị từ 1 đỉnh cho trước
+void DFS(int _begin, GRAPH** graph);
+void BFS(int _begin, GRAPH** graph);
 
 //trả về đỉnh trong đồ thị có id = _id
 graphNode* findVertex(int _id, GRAPH** graph);
